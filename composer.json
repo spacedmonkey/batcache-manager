@@ -1,0 +1,16 @@
+{
+  "name"       : "spacedmonkey/batcache-manager",
+  "description": "Cache clearing for batcache",
+  "homepage"   : "http://www.github.com/spacedmonkey/batcache-manager",
+  "type"       : "wordpress-muplugin",
+  "license"    : "GPL-2.0+",
+  "authors"    : [
+    {
+      "name"    : "Jonathan Harris",
+      "homepage": "http://www.jonathandavidharris.co.uk/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  }
+}
