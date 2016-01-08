@@ -124,7 +124,6 @@ class Batcache_Manager {
 	 */
 	public function action_clean_term_cache( $ids, $taxonomy ) {
 		$this->context = 'term';
-		echo "wibble";
 
 		foreach ( $ids as $term ) {
 			$this->setup_term_urls( $term, $taxonomy );
