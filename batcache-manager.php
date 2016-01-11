@@ -297,9 +297,13 @@ class Batcache_Manager {
 	public function clear_url( $url ) {
 		global $batcache, $wp_object_cache;
 
+		$url = apply_filters( 'batcache_manager_link', $url, $this->context );
+
 		if ( empty( $url ) ) {
 			return false;
 		}
+
+		do_action( 'batcache_manager_before_flush', $url, $this->context );
 
 		// Force to http
 		$url = set_url_scheme( $url, 'http' );
@@ -317,6 +321,8 @@ class Batcache_Manager {
 			$retval                                                             = wp_cache_set( "{$url_key}_version", $retval, $batcache->group );
 			$wp_object_cache->no_remote_groups[ $batcache_no_remote_group_key ] = $batcache->group;
 		}
+
+		do_action( 'batcache_manager_after_flush', $url, $this->context, $retval );
 
 		return $retval;
 	}
