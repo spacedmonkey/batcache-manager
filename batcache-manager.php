@@ -57,6 +57,7 @@ class Batcache_Manager {
 	private function __construct() {
 
 		global $batcache, $wp_object_cache;
+
 		// Do not load if our advanced-cache.php isn't loaded
 		if ( ! isset( $batcache ) || ! is_object( $batcache ) || ! method_exists( $wp_object_cache, 'incr' ) ) {
 			return;
@@ -65,7 +66,7 @@ class Batcache_Manager {
 		$batcache->configure_groups();
 
 		// Posts
-		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ) );
+		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 20 );
 		// Terms
 		add_action( 'clean_term_cache', array( $this, 'action_clean_term_cache' ), 10, 2 );
 		//Comments
@@ -184,9 +185,9 @@ class Batcache_Manager {
 	function setup_site_urls() {
 		if ( get_option( 'show_on_front' ) == 'page' ) {
 			$this->links[] = get_permalink( get_option( 'page_for_posts' ) );
-		} else {
-			$this->links[] = home_url();
 		}
+		
+		$this->links[] = home_url( '/' );
 
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_feed_link( $feed );
@@ -280,7 +281,6 @@ class Batcache_Manager {
 	 * Loop around all urls and clear
 	 */
 	private function clear_urls() {
-
 		foreach ( $this->get_links() as $url ) {
 			$this->clear_url( $url );
 		}
@@ -300,10 +300,12 @@ class Batcache_Manager {
 		if ( empty( $url ) ) {
 			return false;
 		}
+
 		// Force to http
 		$url = set_url_scheme( $url, 'http' );
 
 		$url_key = md5( $url );
+
 		wp_cache_add( "{$url_key}_version", 0, $batcache->group );
 		$retval = wp_cache_incr( "{$url_key}_version", 1, $batcache->group );
 
