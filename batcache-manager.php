@@ -64,8 +64,6 @@ class Batcache_Manager {
 
 		$batcache->configure_groups();
 
-		add_action( 'init', 'batcache_flush_all' );
-
 		// Posts
 		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 20 );
 		// Terms
