@@ -8,7 +8,6 @@
  * Version: 2.0.0
 */
 
-
 /**
  * Class Batcache_Manager
  */
@@ -65,6 +64,8 @@ class Batcache_Manager {
 
 		$batcache->configure_groups();
 
+		add_action( 'init', 'batcache_flush_all' );
+
 		// Posts
 		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 20 );
 		// Terms
@@ -75,6 +76,8 @@ class Batcache_Manager {
 		add_action( 'edit_comment', array( $this, 'action_update_comment' ) );
 		// Users
 		add_action( 'profile_update', array( $this, 'action_update_user' ) );
+		// Widgets
+		add_filter( 'widget_update_callback', array( 'action_update_widget' ), 50 );
 
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
 	}
@@ -156,6 +159,11 @@ class Batcache_Manager {
 		$this->context = 'user';
 		$this->setup_author_urls( $user_id );
 		$this->clear_urls();
+	}
+
+	public function action_update_widget( $instance ) {
+		batcache_flush_all();
+		return $instance;
 	}
 
 	/**
@@ -337,4 +345,4 @@ class Batcache_Manager {
 	}
 
 }
-add_action( 'plugins_loaded', array( 'Batcache_Manager', 'get_instance' ) );
+Batcache_Manager::get_instance();
