@@ -75,7 +75,7 @@ class Batcache_Manager {
 		// Users
 		add_action( 'profile_update', array( $this, 'action_update_user' ) );
 		// Widgets
-		add_filter( 'widget_update_callback', array( 'action_update_widget' ), 50 );
+		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
 
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
 	}
