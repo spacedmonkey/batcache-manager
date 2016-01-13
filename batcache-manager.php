@@ -65,7 +65,7 @@ class Batcache_Manager {
 		$batcache->configure_groups();
 
 		// Posts
-		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 20 );
+		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 15 );
 		// Terms
 		add_action( 'clean_term_cache', array( $this, 'action_clean_term_cache' ), 10, 2 );
 		//Comments
@@ -76,6 +76,12 @@ class Batcache_Manager {
 		add_action( 'profile_update', array( $this, 'action_update_user' ) );
 		// Widgets
 		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
+		// Customiser
+		add_action( 'customize_save_after', 'batcache_flush_all' );
+		// Theme
+		add_action( 'switch_theme', 'batcache_flush_all' );
+		// Nav
+		add_action( 'wp_update_nav_menu', 'batcache_flush_all' );
 
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
 	}
@@ -160,7 +166,9 @@ class Batcache_Manager {
 	}
 
 	public function action_update_widget( $instance ) {
-		batcache_flush_all();
+		if ( function_exists( 'batcache_flush_all' ) ) {
+			batcache_flush_all();
+		}
 		return $instance;
 	}
 
@@ -288,7 +296,7 @@ class Batcache_Manager {
 	 */
 	private function clear_urls() {
 		foreach ( $this->get_links() as $url ) {
-			$this->clear_url( $url );
+			self::clear_url( $url );
 		}
 		// Clear out links
 		$this->links = array();
@@ -300,16 +308,16 @@ class Batcache_Manager {
 	 *
 	 * @return bool|false|int
 	 */
-	public function clear_url( $url ) {
+	public static function clear_url( $url ) {
 		global $batcache, $wp_object_cache;
 
-		$url = apply_filters( 'batcache_manager_link', $url, $this->context );
+		$url = apply_filters( 'batcache_manager_link', $url );
 
 		if ( empty( $url ) ) {
 			return false;
 		}
 
-		do_action( 'batcache_manager_before_flush', $url, $this->context );
+		do_action( 'batcache_manager_before_flush', $url );
 
 		// Force to http
 		$url = set_url_scheme( $url, 'http' );
@@ -328,7 +336,7 @@ class Batcache_Manager {
 			$wp_object_cache->no_remote_groups[ $batcache_no_remote_group_key ] = $batcache->group;
 		}
 
-		do_action( 'batcache_manager_after_flush', $url, $this->context, $retval );
+		do_action( 'batcache_manager_after_flush', $url, $retval );
 
 		return $retval;
 	}
@@ -343,4 +351,7 @@ class Batcache_Manager {
 	}
 
 }
-Batcache_Manager::get_instance();
+
+global $batcache_manager;
+
+$batcache_manager = Batcache_Manager::get_instance();
