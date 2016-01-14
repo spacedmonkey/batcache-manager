@@ -1,5 +1,8 @@
 <?php
 /**
+ * Note: This file should live in wp-content, next to the advanced-cache
+ * drop-in.
+ * 
  * This file is included from within the advanced-cache.php drop-in,
  * before the object cache has been initialised, so we have to
  * initialise it manually.
