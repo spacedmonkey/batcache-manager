@@ -165,6 +165,12 @@ class Batcache_Manager {
 		$this->clear_urls();
 	}
 
+	/**
+	 * Flush all of the caches when a widget is updated.
+	 * 
+	 * @param  array $instance The current widget instance's settings.
+	 * @return array $instance
+	 */
 	public function action_update_widget( $instance ) {
 		if ( function_exists( 'batcache_flush_all' ) ) {
 			batcache_flush_all();
