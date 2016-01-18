@@ -24,6 +24,7 @@ wp_cache_add_global_groups( array( 'cache_incrementors' ) );
  * is the value of the defined batcache group and <incrementor> is a 
  * generated integer value which we increment to invalidate the cache.
  */
+$batcache = is_array($batcache) ? $batcache : array('group' => 'batcache');
 $prefix = isset( $batcache['group'] ) ? $batcache['group'] : 'batcache';
 $batcache['group'] = $prefix . '_' . batcache_get_incr();
 
