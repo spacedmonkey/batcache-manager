@@ -8,7 +8,6 @@
  * Version: 2.0.0
 */
 
-
 /**
  * Class Batcache_Manager
  */
@@ -57,6 +56,7 @@ class Batcache_Manager {
 	private function __construct() {
 
 		global $batcache, $wp_object_cache;
+
 		// Do not load if our advanced-cache.php isn't loaded
 		if ( ! isset( $batcache ) || ! is_object( $batcache ) || ! method_exists( $wp_object_cache, 'incr' ) ) {
 			return;
@@ -65,7 +65,7 @@ class Batcache_Manager {
 		$batcache->configure_groups();
 
 		// Posts
-		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ) );
+		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 15 );
 		// Terms
 		add_action( 'clean_term_cache', array( $this, 'action_clean_term_cache' ), 10, 2 );
 		//Comments
@@ -74,6 +74,14 @@ class Batcache_Manager {
 		add_action( 'edit_comment', array( $this, 'action_update_comment' ) );
 		// Users
 		add_action( 'profile_update', array( $this, 'action_update_user' ) );
+		// Widgets
+		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
+		// Customiser
+		add_action( 'customize_save_after', 'batcache_flush_all' );
+		// Theme
+		add_action( 'switch_theme', 'batcache_flush_all' );
+		// Nav
+		add_action( 'wp_update_nav_menu', 'batcache_flush_all' );
 
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
 	}
@@ -158,6 +166,19 @@ class Batcache_Manager {
 	}
 
 	/**
+	 * Flush all of the caches when a widget is updated.
+	 * 
+	 * @param  array $instance The current widget instance's settings.
+	 * @return array $instance
+	 */
+	public function action_update_widget( $instance ) {
+		if ( function_exists( 'batcache_flush_all' ) ) {
+			batcache_flush_all();
+		}
+		return $instance;
+	}
+
+	/**
 	 * Get term archive and feed links for each term
 	 *
 	 * @param $term
@@ -184,9 +205,9 @@ class Batcache_Manager {
 	function setup_site_urls() {
 		if ( get_option( 'show_on_front' ) == 'page' ) {
 			$this->links[] = get_permalink( get_option( 'page_for_posts' ) );
-		} else {
-			$this->links[] = home_url();
 		}
+		
+		$this->links[] = home_url( '/' );
 
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_feed_link( $feed );
@@ -280,9 +301,8 @@ class Batcache_Manager {
 	 * Loop around all urls and clear
 	 */
 	private function clear_urls() {
-
 		foreach ( $this->get_links() as $url ) {
-			$this->clear_url( $url );
+			self::clear_url( $url );
 		}
 		// Clear out links
 		$this->links = array();
@@ -294,16 +314,22 @@ class Batcache_Manager {
 	 *
 	 * @return bool|false|int
 	 */
-	public function clear_url( $url ) {
+	public static function clear_url( $url ) {
 		global $batcache, $wp_object_cache;
+
+		$url = apply_filters( 'batcache_manager_link', $url );
 
 		if ( empty( $url ) ) {
 			return false;
 		}
+
+		do_action( 'batcache_manager_before_flush', $url );
+
 		// Force to http
 		$url = set_url_scheme( $url, 'http' );
 
 		$url_key = md5( $url );
+
 		wp_cache_add( "{$url_key}_version", 0, $batcache->group );
 		$retval = wp_cache_incr( "{$url_key}_version", 1, $batcache->group );
 
@@ -315,6 +341,8 @@ class Batcache_Manager {
 			$retval                                                             = wp_cache_set( "{$url_key}_version", $retval, $batcache->group );
 			$wp_object_cache->no_remote_groups[ $batcache_no_remote_group_key ] = $batcache->group;
 		}
+
+		do_action( 'batcache_manager_after_flush', $url, $retval );
 
 		return $retval;
 	}
@@ -329,4 +357,7 @@ class Batcache_Manager {
 	}
 
 }
-add_action( 'plugins_loaded', array( 'Batcache_Manager', 'get_instance' ) );
+
+global $batcache_manager;
+
+$batcache_manager = Batcache_Manager::get_instance();
