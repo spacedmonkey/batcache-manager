@@ -73,6 +73,7 @@ class Batcache_Manager {
 		add_action( 'wp_set_comment_status', array( $this, 'action_update_comment' ) );
 		add_action( 'edit_comment', array( $this, 'action_update_comment' ) );
 		// Users
+		add_action( 'clean_user_cache', array( $this, 'action_update_user' ) );
 		add_action( 'profile_update', array( $this, 'action_update_user' ) );
 		// Widgets
 		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
