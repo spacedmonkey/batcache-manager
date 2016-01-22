@@ -102,7 +102,25 @@ class Batcache_Manager {
 
 		return self::$instance;
 	}
-
+	
+	/**
+	 * Determines whether a post type is considered "viewable".
+	 *
+	 * For built-in post types such as posts and pages, the 'public' value will be evaluated.
+	 * For all others, the 'publicly_queryable' value will be used.
+	 *
+	 *
+	 * @param string $post_type Post type object.
+	 * @return bool Whether the post type should be considered viewable.
+	 */
+	public function is_post_type_viewable( $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+		if( empty( $post_type_object ) ) {
+			return false;
+		}
+	        return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
+	}
+	
 	/**
 	 * Clear post on post update
 	 *
@@ -111,7 +129,7 @@ class Batcache_Manager {
 	public function action_clean_post_cache( $post_id ) {
 
 		$post = get_post( $post_id );
-		if ( $post->post_type == 'revision' || ! in_array( get_post_status( $post_id ), array(
+		if ( ! $this->is_post_type_viewable( $post->post_type ) || ! in_array( get_post_status( $post_id ), array(
 				'publish',
 				'trash'
 			) )
