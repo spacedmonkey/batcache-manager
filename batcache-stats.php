@@ -17,7 +17,7 @@ wp_cache_init();
 if ( ! is_object( $wp_object_cache ) )
 	return;
 
-wp_cache_add_global_groups( array( 'cache_incrementors' ) );
+wp_cache_add_global_groups( array( 'batcache' ) );
 
 /**
  * The cache group is in the format <group>_<incrementor>, where <group> 
@@ -33,7 +33,7 @@ $batcache['group'] = $prefix . '_' . batcache_get_incr();
  * @return false|int False on failure, the item's new value on success.
  */
 function batcache_flush_all() {
-	return wp_cache_incr( 'batcache', 1, 'cache_incrementors' );
+	return wp_cache_incr( 'cache_incrementors', 1, 'batcache' );
 }
 
 /**
@@ -42,10 +42,10 @@ function batcache_flush_all() {
  * @return int The incrementor value
  */
 function batcache_get_incr() {
-	$incr = wp_cache_get( 'batcache', 'cache_incrementors', true );
+	$incr = wp_cache_get( 'cache_incrementors', 'batcache' );
 	if ( ! is_numeric( $incr ) ) {
-		$incr = time();
-		wp_cache_set( 'batcache', $incr, 'cache_incrementors' );
+		$incr = 1;
+		wp_cache_set( 'cache_incrementors', $incr, 'batcache' );
 	}
 	return $incr;
 }
