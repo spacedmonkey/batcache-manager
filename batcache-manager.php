@@ -78,13 +78,17 @@ class Batcache_Manager {
 		// Widgets
 		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
 		// Customiser
-		add_action( 'customize_save_after', 'batcache_flush_all' );
+		add_action( 'customize_save_after', array( $this, 'flush_all' ) ); 
 		// Theme
-		add_action( 'switch_theme', 'batcache_flush_all' );
+		add_action( 'switch_theme', array( $this, 'flush_all' ) );
 		// Nav
-		add_action( 'wp_update_nav_menu', 'batcache_flush_all' );
+		add_action( 'wp_update_nav_menu', array( $this, 'flush_all' ) );
 
+		// Add site aliases to list of links
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
+		
+		// Do the flush of the urls on shutdown
+		add_action( 'shutdown', array( $this, 'clear_urls' ) );
 	}
 
 	/**
@@ -140,7 +144,6 @@ class Batcache_Manager {
 		$this->setup_post_urls( $post );
 		$this->setup_author_urls( $post->post_author );
 		$this->setup_site_urls();
-		$this->clear_urls();
 	}
 
 	/**
@@ -156,7 +159,6 @@ class Batcache_Manager {
 			$this->setup_term_urls( $term, $taxonomy );
 
 		}
-		$this->clear_urls();
 	}
 
 	/**
@@ -170,7 +172,6 @@ class Batcache_Manager {
 		$post_id       = $comment->comment_post_ID;
 		$this->setup_post_urls( $post_id );
 		$this->setup_post_comment_urls( $post_id );
-		$this->clear_urls();
 	}
 
 	/**
@@ -181,7 +182,12 @@ class Batcache_Manager {
 	public function action_update_user( $user_id ) {
 		$this->context = 'user';
 		$this->setup_author_urls( $user_id );
-		$this->clear_urls();
+	}
+
+	public function flush_all() {
+		if ( function_exists( 'batcache_flush_all' ) ) {
+			batcache_flush_all();
+		}	
 	}
 
 	/**
@@ -191,9 +197,7 @@ class Batcache_Manager {
 	 * @return array $instance
 	 */
 	public function action_update_widget( $instance ) {
-		if ( function_exists( 'batcache_flush_all' ) ) {
-			batcache_flush_all();
-		}
+		$this->flush_all();
 		return $instance;
 	}
 
@@ -312,14 +316,17 @@ class Batcache_Manager {
 			}
 		}
 
-		// Array unique, lets not repeat ourselves here
-		return array_unique( $links );
+		return $links;
 	}
 
 	/**
 	 * Loop around all urls and clear
 	 */
 	private function clear_urls() {
+		if ( empty ( $this->get_links() ) ) {
+			return;	
+		}	
+		
 		foreach ( $this->get_links() as $url ) {
 			self::clear_url( $url );
 		}
@@ -372,7 +379,8 @@ class Batcache_Manager {
 	 * @return array
 	 */
 	public function get_links() {
-		return apply_filters( 'batcache_manager_links', $this->links, $this->context );
+		$this->links = apply_filters( 'batcache_manager_links', $this->links, $this->context );
+		return array_unique( $this->links );
 	}
 
 }
