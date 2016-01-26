@@ -231,7 +231,7 @@ class Batcache_Manager {
 	 * @param $term
 	 * @param $taxonomy
 	 */
-	function setup_term_urls( $term, $taxonomy ) {
+	public function setup_term_urls( $term, $taxonomy ) {
 
 		$term_link = get_term_link( $term, $taxonomy );
 		if ( ! is_wp_error( $term_link ) ) {
@@ -249,7 +249,7 @@ class Batcache_Manager {
 	/**
 	 * Home page / blog page and feed links
 	 */
-	function setup_site_urls() {
+	public function setup_site_urls() {
 		if ( get_option( 'show_on_front' ) == 'page' ) {
 			$this->links[] = get_permalink( get_option( 'page_for_posts' ) );
 		}
@@ -266,7 +266,7 @@ class Batcache_Manager {
 	 *
 	 * @param $post
 	 */
-	function setup_post_urls( $post ) {
+	public function setup_post_urls( $post ) {
 		$post = get_post( $post );
 
 		$this->links[] = get_permalink( $post );
@@ -294,7 +294,7 @@ class Batcache_Manager {
 	 *
 	 * @param $author_id
 	 */
-	function setup_author_urls( $author_id ) {
+	public function setup_author_urls( $author_id ) {
 		$this->links[] = get_author_posts_url( $author_id );
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_author_feed_link( $author_id, $feed );
@@ -306,7 +306,7 @@ class Batcache_Manager {
 	 *
 	 * @param $post_id
 	 */
-	function setup_post_comment_urls( $post_id ) {
+	public function setup_post_comment_urls( $post_id ) {
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_post_comments_feed_link( $post_id, $feed );
 		}
@@ -322,7 +322,7 @@ class Batcache_Manager {
 	 *
 	 * @param $links
 	 */
-	function add_site_alias( $links ) {
+	public function add_site_alias( $links ) {
 		$home = parse_url( home_url(), PHP_URL_HOST );
 
 		$compare_urls = array(
@@ -346,7 +346,7 @@ class Batcache_Manager {
 	/**
 	 * Loop around all urls and clear
 	 */
-	private function clear_urls() {
+	public function clear_urls() {
 		if ( empty ( $this->get_links() ) ) {
 			return;
 		}
