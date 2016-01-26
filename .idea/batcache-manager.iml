@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="PHP">
+        <CLASSES>
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/brightcoveos/brightcove-php-mapi-wrapper" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/cftp/cli-progress-bar" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/composer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/ipcmedia/keystone-helpers" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/johnpbloch/wordpress-core-installer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/madcoda/php-youtube-api" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/mustache/mustache" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/nb/oxymel" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/oyejorge/less.php" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-code-coverage" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-file-iterator" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-text-template" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-timer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-token-stream" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/phpunit" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/ramsey/array_column" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/rmccue/requests" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/symfony/finder" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/symfony/yaml" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/tburry/pquery" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/twig/twig" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/vimeo/vimeo-api" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/wp-cli/php-cli-tools" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/wp-cli/wp-cli" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/brightcoveos/brightcove-php-mapi-wrapper" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/cftp/cli-progress-bar" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/composer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/ipcmedia/keystone-helpers" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/johnpbloch/wordpress-core-installer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/madcoda/php-youtube-api" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/mustache/mustache" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/nb/oxymel" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/oyejorge/less.php" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-code-coverage" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-file-iterator" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-text-template" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-timer" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/php-token-stream" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/phpunit" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/phpunit/phpunit-mock-objects" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/ramsey/array_column" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/rmccue/requests" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/symfony/finder" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/symfony/yaml" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/tburry/pquery" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/twig/twig" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/vimeo/vimeo-api" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/wp-cli/php-cli-tools" />
+          <root url="file:///Volumes/UserSpace/Users/jonathanharrisAdmin/Documents/Vagrants/vagrant-keystone/personaldev/keystone-core/vendor/wp-cli/wp-cli" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>

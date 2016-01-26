@@ -16,7 +16,7 @@ class Batcache_Manager {
 	/**
 	 * List of feeds
 	 *
-	 * @since    1.0.0
+	 * @since    2.0.0
 	 *
 	 * @var array
 	 */
@@ -25,26 +25,16 @@ class Batcache_Manager {
 	/**
 	 * List of links to process
 	 *
-	 * @since    1.0.0
+	 * @since    2.0.0
 	 *
 	 * @var array
 	 */
 	private $links = array();
 
 	/**
-	 * Context, where are you coming from
-	 *
-	 * @since    1.0.0
-	 *
-	 * @var null
-	 */
-	private $context = null;
-
-
-	/**
 	 * Instance of this class.
 	 *
-	 * @since    1.0.0
+	 * @since    2.0.0
 	 *
 	 * @var      object
 	 */
@@ -67,8 +57,9 @@ class Batcache_Manager {
 		// Posts
 		add_action( 'clean_post_cache', array( $this, 'action_clean_post_cache' ), 15 );
 		// Terms
-		add_action( 'clean_term_cache', array( $this, 'action_clean_term_cache' ), 10, 2 );
+		add_action( 'clean_term_cache', array( $this, 'action_clean_term_cache' ), 10, 3 );
 		//Comments
+		add_action( 'clean_comment_cache', array( $this, 'action_update_comment' ) ); // Only supported in 4.5
 		add_action( 'comment_post', array( $this, 'action_update_comment' ) );
 		add_action( 'wp_set_comment_status', array( $this, 'action_update_comment' ) );
 		add_action( 'edit_comment', array( $this, 'action_update_comment' ) );
@@ -78,7 +69,7 @@ class Batcache_Manager {
 		// Widgets
 		add_filter( 'widget_update_callback', array( $this, 'action_update_widget' ), 50 );
 		// Customiser
-		add_action( 'customize_save_after', array( $this, 'flush_all' ) ); 
+		add_action( 'customize_save_after', array( $this, 'flush_all' ) );
 		// Theme
 		add_action( 'switch_theme', array( $this, 'flush_all' ) );
 		// Nav
@@ -86,7 +77,7 @@ class Batcache_Manager {
 
 		// Add site aliases to list of links
 		add_filter( 'batcache_manager_links', array( $this, 'add_site_alias' ) );
-		
+
 		// Do the flush of the urls on shutdown
 		add_action( 'shutdown', array( $this, 'clear_urls' ) );
 	}
@@ -94,7 +85,7 @@ class Batcache_Manager {
 	/**
 	 * Return an instance of this class.
 	 *
-	 * @since     1.0.0
+	 * @since     2.0.0
 	 *
 	 * @return    object    A single instance of this class.
 	 */
@@ -106,7 +97,7 @@ class Batcache_Manager {
 
 		return self::$instance;
 	}
-	
+
 	/**
 	 * Determines whether a post type is considered "viewable".
 	 *
@@ -114,17 +105,43 @@ class Batcache_Manager {
 	 * For all others, the 'publicly_queryable' value will be used.
 	 *
 	 *
-	 * @param string $post_type Post type object.
+	 * @param string $post_type Post type.
+	 *
 	 * @return bool Whether the post type should be considered viewable.
 	 */
 	public function is_post_type_viewable( $post_type ) {
 		$post_type_object = get_post_type_object( $post_type );
-		if( empty( $post_type_object ) ) {
+		if ( empty( $post_type_object ) ) {
 			return false;
 		}
-	        return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
+
+		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
 	}
-	
+
+	/**
+	 * Whether the taxonomy object is public.
+	 *
+	 * Checks to make sure that the taxonomy is an object first. Then Gets the
+	 * object, and finally returns the public value in the object.
+	 *
+	 * A false return value might also mean that the taxonomy does not exist.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $taxonomy Name of taxonomy object.
+	 *
+	 * @return bool Whether the taxonomy is public.
+	 */
+	function is_taxonomy_viewable( $taxonomy ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return false;
+		}
+
+		$taxonomy = get_taxonomy( $taxonomy );
+
+		return $taxonomy->public;
+	}
+
 	/**
 	 * Clear post on post update
 	 *
@@ -140,7 +157,6 @@ class Batcache_Manager {
 		) {
 			return;
 		}
-		$this->context = 'post';
 		$this->setup_post_urls( $post );
 		$this->setup_author_urls( $post->post_author );
 		$this->setup_site_urls();
@@ -149,15 +165,23 @@ class Batcache_Manager {
 	/**
 	 * Clear terms on term update
 	 *
-	 * @param $ids
-	 * @param $taxonomy
+	 * @param array $ids Single or list of Term IDs.
+	 * @param string $taxonomy
+	 * @param bool $clean_taxonomy Optional. Whether to clean taxonomy wide caches (true), or just individual
+	 *                                       term object caches (false). Default true. Only support in WP 4.5
 	 */
-	public function action_clean_term_cache( $ids, $taxonomy ) {
-		$this->context = 'term';
+	public function action_clean_term_cache( $ids, $taxonomy, $clean_taxonomy = true ) {
+		// Clear taxonomy global caches. If false, lets not both.
+		if ( ! $clean_taxonomy ) {
+			return;
+		}
+		// If not a public taxonomy, don't clear caches.
+		if ( ! $this->is_taxonomy_viewable( $taxonomy ) ) {
+			return;
+		}
 
 		foreach ( $ids as $term ) {
 			$this->setup_term_urls( $term, $taxonomy );
-
 		}
 	}
 
@@ -167,9 +191,8 @@ class Batcache_Manager {
 	 * @param $comment_id
 	 */
 	public function action_update_comment( $comment_id ) {
-		$this->context = 'comment';
-		$comment       = get_comment( $comment_id );
-		$post_id       = $comment->comment_post_ID;
+		$comment = get_comment( $comment_id );
+		$post_id = $comment->comment_post_ID;
 		$this->setup_post_urls( $post_id );
 		$this->setup_post_comment_urls( $post_id );
 	}
@@ -180,24 +203,25 @@ class Batcache_Manager {
 	 * @param $user_id
 	 */
 	public function action_update_user( $user_id ) {
-		$this->context = 'user';
 		$this->setup_author_urls( $user_id );
 	}
 
 	public function flush_all() {
 		if ( function_exists( 'batcache_flush_all' ) ) {
 			batcache_flush_all();
-		}	
+		}
 	}
 
 	/**
 	 * Flush all of the caches when a widget is updated.
-	 * 
+	 *
 	 * @param  array $instance The current widget instance's settings.
+	 *
 	 * @return array $instance
 	 */
 	public function action_update_widget( $instance ) {
 		$this->flush_all();
+
 		return $instance;
 	}
 
@@ -229,7 +253,7 @@ class Batcache_Manager {
 		if ( get_option( 'show_on_front' ) == 'page' ) {
 			$this->links[] = get_permalink( get_option( 'page_for_posts' ) );
 		}
-		
+
 		$this->links[] = home_url( '/' );
 
 		foreach ( $this->feeds as $feed ) {
@@ -324,9 +348,9 @@ class Batcache_Manager {
 	 */
 	private function clear_urls() {
 		if ( empty ( $this->get_links() ) ) {
-			return;	
-		}	
-		
+			return;
+		}
+
 		foreach ( $this->get_links() as $url ) {
 			self::clear_url( $url );
 		}
@@ -379,7 +403,8 @@ class Batcache_Manager {
 	 * @return array
 	 */
 	public function get_links() {
-		$this->links = apply_filters( 'batcache_manager_links', $this->links, $this->context );
+		$this->links = apply_filters( 'batcache_manager_links', $this->links );
+
 		return array_unique( $this->links );
 	}
 
