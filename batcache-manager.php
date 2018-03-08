@@ -194,7 +194,7 @@ class Batcache_Manager {
 		$comment = get_comment( $comment_id );
 		$post_id = $comment->comment_post_ID;
 		$this->setup_post_urls( $post_id );
-		$this->setup_post_comment_urls( $post_id );
+		$this->setup_post_comment_urls( $post_id, $comment_id );
 	}
 
 	/**
@@ -244,6 +244,13 @@ class Batcache_Manager {
 			}
 		}
 
+		$taxonomy_object = get_taxonomy( $taxonomy );
+		if ( $taxonomy_object->show_in_rest && $taxonomy_object->rest_base ) {
+			$base = $taxonomy_object->rest_base;
+			$this->links[] = get_rest_url( null, '/wp/v2/' . $base );
+			$this->links[] = get_rest_url( null, '/wp/v2/' . $base . '/'. $term );
+		}
+
 	}
 
 	/**
@@ -287,6 +294,12 @@ class Batcache_Manager {
 				}
 			}
 		}
+		$post_type = get_post_type_object( $post->post_type );
+		if ( $post_type->show_in_rest && $post_type->rest_base ) {
+			$base = $post_type->rest_base;
+			$this->links[] = get_rest_url( null, '/wp/v2/' . $base );
+			$this->links[] = get_rest_url( null, '/wp/v2/' . $base . '/'. $post->ID );
+		}
 	}
 
 	/**
@@ -299,6 +312,8 @@ class Batcache_Manager {
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_author_feed_link( $author_id, $feed );
 		}
+		$this->links[] = get_rest_url( null, '/wp/v2/users' );
+		$this->links[] = get_rest_url( null, '/wp/v2/users/' . $author_id );
 	}
 
 	/**
@@ -306,7 +321,7 @@ class Batcache_Manager {
 	 *
 	 * @param $post_id
 	 */
-	public function setup_post_comment_urls( $post_id ) {
+	public function setup_post_comment_urls( $post_id, $comment_id = 0 ) {
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_post_comments_feed_link( $post_id, $feed );
 		}
@@ -314,6 +329,8 @@ class Batcache_Manager {
 		foreach ( $this->feeds as $feed ) {
 			$this->links[] = get_feed_link( "comments_" . $feed );
 		}
+		$this->links[] = get_rest_url( null, '/wp/v2/comments' );
+		$this->links[] = get_rest_url( null, '/wp/v2/comments/' . $comment_id );
 	}
 
 
